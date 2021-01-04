@@ -7,22 +7,23 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Comment, User }) {
+    static associate({ Comment, User, Category }) {
       // define association here
       this.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-      this.hasMany(Comment, { foreignKey: 'commentId', as: 'comments' });
+      this.belongsTo(Category, { foreignKey: 'categoryId', as: 'category' });
+      this.hasMany(Comment, { foreignKey: 'postId', as: 'comments' });
+    }
+    toJSON() {
+      return {
+        ...this.get(),
+        id: undefined,
+        userId: undefined,
+        categoryId: undefined,
+      };
     }
   }
   Post.init(
     {
-      category: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notNull: { msg: 'Category is required' },
-          notEmpty: { msg: 'Category can not be empty' },
-        },
-      },
       uuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,

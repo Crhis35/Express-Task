@@ -7,6 +7,10 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/usersRoutes');
+const postRouter = require('./routes/postsRoutes');
+const categoryRouter = require('./routes/categoriesRoutes');
+const commentRouter = require('./routes/commentsRoutes');
+
 const AppError = require('./utils/appError');
 
 const globalErrorHandler = require('./controllers/errorController');
@@ -48,6 +52,9 @@ app.use(
 );
 
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/categories', categoryRouter);
+app.use('/api/v1/posts', postRouter);
+app.use('/api/v1/comments', commentRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server.`), 404);

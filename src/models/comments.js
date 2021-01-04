@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Post }) {
       // define association here
-      this.belongsTo(Post, { foreignKey: 'postId', as: 'posts' });
+      this.belongsTo(Post, { foreignKey: 'postId', as: 'comments' });
     }
   }
   Comment.init(
