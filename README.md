@@ -105,7 +105,7 @@ has permissions to access.
 * Update Category: `PATCH api/v1/posts/:id`
 * Delete Category:`DELETE api/v1/posts/:id`
 
-### Post related
+### Comments related
 
 Endpoints for viewing and manipulating the Comments that the Authenticated User
 has permissions to access.
@@ -115,3 +115,16 @@ has permissions to access.
 * Get One Comments: `GET /api/v1/comments/:id`
 * Update Comment: `PATCH api/v1/comments/:id`
 * Delete Comment:`DELETE api/v1/comments/:id`
+
+# Emails
+
+> Welcome email
+
+![Welcome](./images/Welcome.png)
+
+> Post visit count every hour at 50
+
+![Welcome](./images/visitCount.png)
+
+> Note I did not use passportJs because I just like to use when I have to do a google Auth 
+
