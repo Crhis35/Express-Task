@@ -1,6 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const bycript = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -9,13 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Post }) {
+    static associate({ Post, Comment }) {
       // define association here
       this.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
+      this.hasMany(Comment, { foreignKey: 'userId', as: 'comments' });
     }
-    toJSON() {
-      return { ...this.get(), id: undefined };
-    }
+    // toJSON() {
+    //   return { ...this.get(), id: undefined };
+    // }
   }
   User.init(
     {
@@ -27,18 +29,12 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: 'Name can not be empty' },
         },
       },
-      uuid: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
           notNull: { msg: 'Email is required' },
           notEmpty: { msg: 'Email can not be empty' },
-
           isEmail: true,
         },
         unique: {
@@ -48,9 +44,8 @@ module.exports = (sequelize, DataTypes) => {
       },
       role: {
         type: DataTypes.ENUM('admin', 'user'),
-        defaultValue: 'admin',
+        defaultValue: 'user',
         allowNull: false,
-
         validate: {
           notNull: { msg: 'Role is required' },
           notEmpty: { msg: 'Role can not be empty' },
@@ -79,10 +74,10 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'User',
     }
   );
-  User.beforeCreate(
-    async (user, options) =>
-      (user.password = await bycript.hash(user.password, 12))
-  );
+  User.beforeCreate(async (user, options) => {
+    user.password = await bycript.hash(user.password, 12);
+    user.id = uuidv4();
+  });
   User.prototype.correctPassword = async function (
     candidatePassword,
     userPassword

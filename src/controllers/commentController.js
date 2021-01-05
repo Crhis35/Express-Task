@@ -3,8 +3,8 @@ const Factory = require('./handlerFactory');
 
 exports.setCategoryUserIds = (req, res, next) => {
   if (!req.params.postId) next(new AppError('No Category selected', 400));
-  req.uuids = {
-    userId: req.user.uuid,
+  req.ids = {
+    userId: req.user.id,
     postId: req.params.postId,
   };
   next();

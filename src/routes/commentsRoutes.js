@@ -20,12 +20,12 @@ router
   .get(commentController.getOneComment)
   .patch(
     authController.protect,
-    authController.restrictTo('admin'),
+    authController.restrictTo('admin', 'user'),
     commentController.updateComment
   )
   .delete(
     authController.protect,
-    authController.restrictTo('admin'),
+    authController.restrictTo('user'),
     commentController.deleteComment
   );
 

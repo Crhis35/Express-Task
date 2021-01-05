@@ -7,13 +7,13 @@ const AppError = require('./../utils/appError');
 // const Email = require('./../utils/email');
 
 const signToken = (id) => {
-  return jwt.sign({ id: id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.uuid);
+  const token = signToken(user.id);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -31,12 +31,11 @@ const createSendToken = (user, statusCode, res) => {
     status: 'success',
     token,
     data: {
-      user: user,
+      user,
     },
   });
 };
 exports.signup = catchAsync(async (req, res, next) => {
-  // BADDDDD! const newUser = await User.create(req.body); // Role
   if (
     await User.findOne({
       where: {
@@ -52,7 +51,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     role: req.body.role ? req.body.role : 'user',
   });
-  //   const url = `${req.protocol}://${req.get('host')}/me`;
 
   //   await new Email(newUser, url).sendWelcome();
 
@@ -71,11 +69,10 @@ exports.login = catchAsync(async (req, res, next) => {
     },
   });
 
-  // const correct = await user.correctPassword(password,user.password);
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError('Incorrect email or password', 401));
 
-  //3) If everything ok, send token to client
+  // If everything ok, send token to client
   createSendToken(user, 201, res);
 });
 
@@ -107,9 +104,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // check if user still exits
-  const currentUser = await User.findOne({
-    where: { uuid: decoded.id },
-  });
+  const currentUser = await User.findByPk(decoded.id);
   if (!currentUser)
     return next(
       new AppError('The user belonging to this token does not exits', 401)

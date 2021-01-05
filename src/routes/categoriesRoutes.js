@@ -29,5 +29,11 @@ router
     authController.restrictTo('admin'),
     categoryController.deleteCategory
   );
-
+router
+  .route('/:id/resume')
+  .get(
+    authController.protect,
+    authController.restrictTo('admin'),
+    categoryController.categoryResume
+  );
 module.exports = router;

@@ -17,11 +17,7 @@ exports.deleteOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    let doc = await Model.findOne({
-      where: {
-        uuid: req.params.id,
-      },
-    });
+    let doc = await Model.findByPk(req.params.id);
 
     if (!doc) {
       return next(new AppError('No Docuement found with that ID', 404));
@@ -37,13 +33,11 @@ exports.updateOne = (Model) =>
     });
   });
 
-const populationData = async (RModel, id, uuids) => {
+const populationData = async (RModel, id, ids) => {
   let data = {};
   for (let el in id) {
     try {
-      let found = await RModel[el].findOne({
-        where: { uuid: uuids[id[el]] },
-      });
+      let found = await RModel[el].findByPk(ids[id[el]]);
       data[id[el]] = found.id;
     } catch (e) {
       return new AppError(`Did not find ${el} in database`, 404);
@@ -51,11 +45,12 @@ const populationData = async (RModel, id, uuids) => {
   }
   return data;
 };
+
 exports.createOne = (Model, RelationModel) =>
   catchAsync(async (req, res, next) => {
     if (RelationModel) {
       const { RModel, id } = RelationModel;
-      populationData(RModel, id, req.uuids)
+      populationData(RModel, id, req.ids)
         .then(async (obj) => {
           const newDoc = await Model.create({
             ...obj,
@@ -83,10 +78,10 @@ exports.createOne = (Model, RelationModel) =>
 exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
     const options = {};
-    if (popOptions) options['include'] = [popOptions];
+    if (popOptions) options['include'] = popOptions;
     let doc = await Model.findOne({
       where: {
-        uuid: req.params.id,
+        id: req.params.id,
       },
       ...options,
     });
@@ -100,12 +95,12 @@ exports.getOne = (Model, popOptions) =>
     });
   });
 
-exports.getAll = (Model) =>
+exports.getAll = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
     const params = ['offset', 'limit'];
     let { query } = req;
     const options = {};
-
+    if (popOptions) options['include'] = popOptions;
     if (query) {
       Object.keys(query).map((key) => {
         if (params.includes(key)) options[key] = query[key];
@@ -117,6 +112,7 @@ exports.getAll = (Model) =>
       limit: 10,
       attributes: { exclude: ['password'] },
       ...options,
+      ...popOptions,
     });
 
     res.status(200).json({

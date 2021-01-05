@@ -1,5 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     /**
@@ -13,21 +15,17 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(Category, { foreignKey: 'categoryId', as: 'category' });
       this.hasMany(Comment, { foreignKey: 'postId', as: 'comments' });
     }
-    toJSON() {
-      return {
-        ...this.get(),
-        id: undefined,
-        userId: undefined,
-        categoryId: undefined,
-      };
-    }
+    // toJSON() {
+    //   return {
+    //     ...this.get(),
+    //     id: undefined,
+    //     userId: undefined,
+    //     categoryId: undefined,
+    //   };
+    // }
   }
   Post.init(
     {
-      uuid: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-      },
       question: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -47,6 +45,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Post',
     }
   );
-
+  Post.beforeCreate(async (post, options) => (post.id = uuidv4()));
   return Post;
 };

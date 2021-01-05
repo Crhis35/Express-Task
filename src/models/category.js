@@ -1,5 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
+
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
     /**
@@ -11,13 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.hasMany(Post, { foreignKey: 'categoryId', as: 'posts' });
     }
-    toJSON() {
-      return {
-        ...this.get(),
-        id: undefined,
-        userId: undefined,
-      };
-    }
+    // toJSON() {
+    //   return {
+    //     ...this.get(),
+    //     id: undefined,
+    //     userId: undefined,
+    //   };
+    // }
   }
   Category.init(
     {
@@ -29,10 +31,6 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: 'Name can not be empty' },
         },
       },
-      uuid: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-      },
     },
     {
       sequelize,
@@ -40,5 +38,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Category',
     }
   );
+  Category.beforeCreate(async (category, options) => (category.id = uuidv4()));
   return Category;
 };

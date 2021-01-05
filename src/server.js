@@ -15,7 +15,7 @@ const app = require('./app');
 app.set('port', process.env.PORT || 5000);
 
 const server = app.listen(app.get('port'), async () => {
-  await sequelize.sync();
+  await sequelize.authenticate();
   console.log(`App runing on port ${app.get('port')}`);
 });
 

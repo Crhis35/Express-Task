@@ -4,24 +4,19 @@ module.exports = {
     await queryInterface.createTable('posts', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      uuid: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
       },
       question: {
         type: Sequelize.STRING,
         allowNull: false,
       },
       userId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       categoryId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       createdAt: {
