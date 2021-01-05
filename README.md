@@ -1,4 +1,4 @@
-# Express RESTAPIDocs
+# Express REST API Docs
 
 ## Configurations
 
@@ -44,6 +44,7 @@ npm install
 npm run build
 npm start
 ```
+
 Or
 
 ```sh
