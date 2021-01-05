@@ -17,9 +17,10 @@ router
     postController.createPost
   );
 
+router.route('/:id/time').get(postController.visitPost);
 router
   .route('/:id')
-  .get(postController.getOnePost)
+  .get(postController.visits, postController.getOnePost)
   .patch(
     authController.protect,
     authController.restrictTo('admin'),

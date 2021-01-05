@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('./../models');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
-// const Email = require('./../utils/email');
+const Email = require('../services/email');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -52,7 +52,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role ? req.body.role : 'user',
   });
 
-  //   await new Email(newUser, url).sendWelcome();
+  await new Email(newUser, '').sendWelcome();
 
   createSendToken(newUser, 201, res);
 });

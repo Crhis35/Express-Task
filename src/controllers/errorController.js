@@ -26,7 +26,7 @@ const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401);
 
 const sendErrorDev = (err, req, res) => {
-  // A) API
+  // API
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -38,19 +38,19 @@ const sendErrorDev = (err, req, res) => {
 };
 
 const sendErrorProd = (err, req, res) => {
-  // A) API
+  // API
   if (req.originalUrl.startsWith('/api')) {
-    // A) Operational, trusted error: send message to client
+    // Operational, trusted error: send message to client
     if (err.isOperational) {
       return res.status(err.statusCode).json({
         status: err.status,
         message: err.message,
       });
     }
-    // B) Programming or other unknown error: don't leak error details
-    // 1) Log error
+    //  Programming or other unknown error: don't leak error details
+    //  Log error
     console.error('ERROR 💥', err);
-    // 2) Send generic message
+    // Send generic message
     return res.status(500).json({
       status: 'error',
       message: 'Something went very wrong!',
