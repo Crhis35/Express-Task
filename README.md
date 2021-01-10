@@ -36,6 +36,21 @@ I recomment set NODE_ENV to production but you can use development as well.
   }
 }
 ```
+## Database 
+
+Change directory to *src/* and inside you could execute sequelize commands
+
+```sh
+sequelize db:create
+sequelize db:migrate
+```
+If you do not have sequelize you could use npx
+
+```sh
+npx sequelize db:create
+npx sequelize db:migrate
+```
+
 
 ## Installation
 
