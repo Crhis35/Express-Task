@@ -75,6 +75,7 @@ You could use [Ethereal](https://ethereal.email/) for recived messages.
 ## Open Endpoints
 
 > Showing production errors.
+> All getAll Enpoints are paginate you could use limits and offset to controll data response
 
 Open endpoints require no Authentication.
 
